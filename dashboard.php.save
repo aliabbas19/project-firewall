@@ -1,0 +1,88 @@
+<?php
+session_start();
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    header("Location: login.php");
+    exit;
+}
+?>
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>لوحة تحكم الجدار الناري</title>
+  <style>
+    body { font-family: Arial; direction: rtl; text-align: center; background-color: #f8f8f8; }
+    .section { background: #fff; padding: 20px; margin: 20px auto; width: 70%; border-radius: 10px; box-shadow: 0 0 10px #ccc; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    table, th, td { border: 1px solid #aaa; }
+    th, td { padding: 10px; }
+    input, button { padding: 10px; margin: 5px; border-radius: 5px; border: 1px solid #aaa; }
+  </style>
+</head>
+<body>
+
+  <h2>👨‍💻 لوحة التحكم - الجدار الناري الذكي</h2>
+
+  <div class="section">
+    <h3>🔐 تحديث معلومات الدخول</h3>
+    <form method="POST" action="update_credentials.php">
+      <input name="username" placeholder="اسم المستخدم الجديد" required>
+      <input type="password" name="password" placeholder="كلمة المرور الجديدة" required>
+      <button type="submit">تحديث</button>
+    </form>
+  </div>
+<div class="section">
+  <h3>📊 إحصائيات الحظر</h3>
+  <p>📍 IP محظور: <span id="ipCount">0</span></p>
+  <p>🎯 المنافذ المحظورة: <span id="portCount">0</span></p>
+  <p>📡 البروتوكولات المحظورة: <span id="protoCount">0</span></p>
+  <canvas id="banChart" width="400" height="200"></canvas>
+</div>
+
+  <div class="section">
+    <h3>🛑 حظر عنوان IP</h3>
+    <form id="blockForm">
+      <input type="text" name="ip" placeholder="أدخل IP لحظره" required>
+      <button type="submit">حظر</button>
+    </form>
+    <div id="rulesTable">جاري تحميل قائمة الحظر...</div>
+  </div>
+<div class="section">
+  <h3>🚫 حظر منفذ</h3>
+  <form id="blockPortForm">
+    <input type="number" name="port" placeholder="أدخل رقم المنفذ" required>
+    <button type="submit">حظر</button>
+  </form>
+  <div id="portsTable">جاري تحميل المنافذ المحظورة...</div>
+</div>
+<div class="section">
+  <h3>📡 حظر بروتوكول</h3>
+  <form id="protoForm">
+    <select name="protocol" required>
+      <option value="tcp">TCP</option>
+      <option value="udp">UDP</option>
+      <option value="icmp">ICMP</option>
+    </select>
+    <button type="submit">حظر</button>
+  </form>
+  <div id="protoTable">جاري تحميل البروتوكولات المحظورة...</div>
+</div>
+<h3>📋 إضافة قاعدة مخصصة</h3>
+<form id="customRuleForm">
+  <input type="text" name="ip" placeholder="IP (اختياري)">
+  <input type="text" name="port" placeholder="Port (اختياري)">
+  <select name="protocol">
+    <option value="tcp">TCP</option>
+    <option value="udp">UDP</option>
+    <option value="icmp">ICMP</option>
+  </select>
+  <select name="direction">
+    <option value="in">🔽 وارد (IN)</option>
+    <option value="out">🔼 صادر (OUT)</option>
+  </select>
+  <button type="submit">➕ إضافة القاعدة</button>
+</form>
+<div id="ruleResult"></div>
+
+ 
